@@ -1,4 +1,6 @@
 package com.expence.tracker.exception;
 
-public record ErrorMessage(String message) {
+import java.sql.Timestamp;
+
+public record ErrorMessage(Integer statusCodeValue, String message, Timestamp timestamp) {
 }

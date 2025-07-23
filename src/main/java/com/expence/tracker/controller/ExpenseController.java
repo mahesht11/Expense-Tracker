@@ -4,6 +4,7 @@ package com.expence.tracker.controller;
 import com.expence.tracker.dto.ExpenseRecord;
 import com.expence.tracker.entity.Expense;
 import com.expence.tracker.service.ExpenseService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +45,7 @@ public class ExpenseController {
     }
 
     @PostMapping("/expenses")
-    public ResponseEntity<ExpenseRecord> saveExpense(@RequestBody ExpenseRecord record){
+    public ResponseEntity<ExpenseRecord> saveExpense(@Valid @RequestBody ExpenseRecord record){
         log.info("Expense Controller class : saveExpense() : ");
         return new ResponseEntity<>(expenseService.saveExpense(record), HttpStatus.CREATED);
     }
