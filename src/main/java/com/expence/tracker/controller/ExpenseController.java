@@ -6,6 +6,9 @@ import com.expence.tracker.entity.Expense;
 import com.expence.tracker.service.ExpenseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +25,10 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/expenses")
-    public ResponseEntity<List<Expense>> getAllExpenses(){
+    public ResponseEntity<List<Expense>> getAllExpenses(Integer pageNo, Integer pageSize, String sortBy){
         log.info("Expense controller class : ");
-        return new ResponseEntity<>(expenseService.getAllExpenses(), HttpStatus.FOUND);
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        return new ResponseEntity<>(expenseService.getAllExpenses(paging), HttpStatus.FOUND);
     }
 
     @GetMapping("/expenses/{id}")
@@ -43,6 +47,12 @@ public class ExpenseController {
     public ResponseEntity<ExpenseRecord> saveExpense(@RequestBody ExpenseRecord record){
         log.info("Expense Controller class : saveExpense() : ");
         return new ResponseEntity<>(expenseService.saveExpense(record), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/expenses/{id}")
+    public ResponseEntity<ExpenseRecord> updateExpenseById(@RequestBody ExpenseRecord record, @PathVariable Long id){
+        log.info("Expense Controller class : updateExpenseById() with the id : "+id);
+        return new ResponseEntity<>(expenseService.updateExpenseById(record, id), HttpStatus.ACCEPTED);
     }
 }
 
