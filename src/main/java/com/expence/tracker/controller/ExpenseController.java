@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,7 +28,7 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/expenses")
-    public ResponseEntity<List<Expense>> getAllExpenses(Integer pageNo, Integer pageSize, String sortBy){
+    public ResponseEntity<List<Expense>> getAllExpenses(@RequestParam(required = false) Integer pageNo, @RequestParam(required = false) Integer pageSize, @RequestParam(required = false) String sortBy){
         log.info("Expense controller class : ");
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
         return new ResponseEntity<>(expenseService.getAllExpenses(paging), HttpStatus.FOUND);
@@ -54,6 +56,20 @@ public class ExpenseController {
     public ResponseEntity<ExpenseRecord> updateExpenseById(@RequestBody ExpenseRecord record, @PathVariable Long id){
         log.info("Expense Controller class : updateExpenseById() with the id : "+id);
         return new ResponseEntity<>(expenseService.updateExpenseById(record, id), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("expenses/category")
+    public ResponseEntity<List<Expense>> getAllExpencesByCategory(@RequestParam String category, Pageable page){
+        return new ResponseEntity<>(expenseService.readByCategory(category, page), HttpStatus.FOUND);
+    }
+
+    @GetMapping("expenses/name")
+    public ResponseEntity<List<Expense>> getAllExpencesByName(@RequestParam String name, Pageable page){
+        return new ResponseEntity<>(expenseService.readByName(name, page), HttpStatus.FOUND);
+    }
+    @GetMapping("expenses/date")
+    public ResponseEntity<List<Expense>> getAllExpenseByDates(@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, Pageable page) throws ParseException {
+        return new ResponseEntity<>(expenseService.readByDates(startDate, endDate, page), HttpStatus.ACCEPTED);
     }
 }
 

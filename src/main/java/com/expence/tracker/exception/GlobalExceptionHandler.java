@@ -13,7 +13,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +22,14 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ExpenseException.class)
-    public ResponseEntity<ErrorMessage> handleExpenseException(ExpenseException ex, WebRequest request){
+    @ExceptionHandler(ExpenseNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleExpenseException(ExpenseNotFoundException ex, WebRequest request){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.getMessage(), new Timestamp(System.currentTimeMillis()));
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleExpenseException(UserNotFoundException ex, WebRequest request){
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND.value(), ex.getMessage(), new Timestamp(System.currentTimeMillis()));
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
